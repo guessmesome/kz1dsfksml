@@ -6,37 +6,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorElement = document.getElementById('error');
     
     function checkLocationAndRedirect() {
-        const endpoint = 'http://ip-api.com/json/?fields=status,message,countryCode';
-        
-        const xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
-                    const response = JSON.parse(this.responseText);
-                    
-                    if (response.status !== 'success') {
-                        showError('Error: ' + response.message);
-                        return;
-                    }
-                    
-                    if (response.countryCode === 'RU') {
-                        window.location.href = LINK_RUSSIA;
-                    } else if (response.countryCode === 'KZ') {
-                        window.location.href = LINK_KAZAKHSTAN;
-                    } else {
-                        showError('Access denied for your region.');
-                        setTimeout(() => {
-                            window.close();
-                        }, 3000);
-                    }
+        fetch('https://ipapi.co/json/')
+            .then(response => {
+                if (!response.ok) throw new Error('API request failed');
+                return response.json();
+            })
+            .then(data => {
+                if (data.country === 'RU') {
+                    window.location.href = LINK_RUSSIA;
+                } else if (data.country === 'KZ') {
+                    window.location.href = LINK_KAZAKHSTAN;
                 } else {
-                    showError('Error checking location. Please try again later.');
+                    showError('Access denied for your region.');
+                    setTimeout(() => {
+                        window.close();
+                    }, 3000);
                 }
-            }
-        };
-        
-        xhr.open('GET', endpoint, true);
-        xhr.send();
+            })
+            .catch(error => {
+                showError('Error checking location. Please try again later.');
+            });
     }
     
     function showError(message) {
