@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (countryCode === 'RU') {
                     window.location.href = LINK_RUSSIA;
-                } else if (countryCode === 'KZ') {
+                } else if (countryCode === 'FR') {
                     window.location.href = LINK_KAZAKHSTAN;
                 } else {
                     showError('Access denied for your region.');
