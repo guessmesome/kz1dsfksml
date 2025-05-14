@@ -6,15 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorElement = document.getElementById('error');
     
     function checkLocationAndRedirect() {
-        fetch('https://ipapi.co/json/')
+        fetch('https://get.geojs.io/v1/ip/country.json')
             .then(response => {
                 if (!response.ok) throw new Error('API request failed');
                 return response.json();
             })
             .then(data => {
-                if (data.country === 'RU') {
+                const countryCode = data.country;
+                
+                if (countryCode === 'RU') {
                     window.location.href = LINK_RUSSIA;
-                } else if (data.country === 'KZ') {
+                } else if (countryCode === 'KZ') {
                     window.location.href = LINK_KAZAKHSTAN;
                 } else {
                     showError('Access denied for your region.');
