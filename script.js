@@ -5,30 +5,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingElement = document.getElementById('loading');
     const errorElement = document.getElementById('error');
     
-    function redirectBasedOnLanguage() {
-        const userLanguages = navigator.languages || [navigator.language || navigator.userLanguage];
+    function checkLocationAndRedirect() {
+        const endpoint = 'http://ip-api.com/json/?fields=status,message,countryCode';
         
-        const isRussian = userLanguages.some(lang => 
-            lang.toLowerCase().startsWith('ru') || 
-            lang.toLowerCase().includes('ru-')
-        );
-        
-        const isKazakh = userLanguages.some(lang => 
-            lang.toLowerCase().startsWith('kk') || 
-            lang.toLowerCase().includes('kz') ||
-            lang.toLowerCase().includes('kk-')
-        );
-        
-        if (isRussian) {
-            window.location.href = LINK_RUSSIA;
-        } else if (isKazakh) {
-            window.location.href = LINK_KAZAKHSTAN;
-        } else {
-            showError('Access denied for your region.');
-            setTimeout(() => {
-                window.close();
-            }, 3000);
-        }
+        fetch(endpoint)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status !== 'success') {
+                    throw new Error('Query failed: ' + data.message);
+                }
+                
+                if (data.countryCode === 'RU') {
+                    window.location.href = LINK_RUSSIA;
+                } else if (data.countryCode === 'KZ') {
+                    window.location.href = LINK_KAZAKHSTAN;
+                } else {
+                    showError('Access denied for your region.');
+                    setTimeout(() => {
+                        window.close();
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Error checking location. Please try again later.');
+            });
     }
     
     function showError(message) {
@@ -37,5 +43,5 @@ document.addEventListener('DOMContentLoaded', () => {
         errorElement.classList.remove('hidden');
     }
     
-    redirectBasedOnLanguage();
+    checkLocationAndRedirect();
 });
