@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorElement = document.getElementById('error');
     
     function checkLocationAndRedirect() {
+        window.va?.('track', 'geolocation_check_started');
+        
         fetch('https://get.geojs.io/v1/ip/country.json')
             .then(response => {
                 if (!response.ok) throw new Error('API request failed');
@@ -15,18 +17,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const countryCode = data.country;
                 
                 if (countryCode === 'RU') {
+                    window.va?.('track', 'redirect_russia');
                     window.location.href = LINK_RUSSIA;
                 } else if (countryCode === 'KZ') {
+                    window.va?.('track', 'redirect_kazakhstan');
                     window.location.href = LINK_KAZAKHSTAN;
                 } else {
-                    showError('Access denied for your region.');
-                    setTimeout(() => {
-                        window.close();
-                    }, 3000);
+                    window.va?.('track', 'redirect_other_country', { country: countryCode });
+                    window.location.href = LINK_RUSSIA;
                 }
             })
             .catch(error => {
-                showError('Error checking location. Please try again later.');
+                window.va?.('track', 'geolocation_error_redirect_default', { error: error.message });
+                window.location.href = LINK_RUSSIA;
             });
     }
     
