@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const LINK_RUSSIA = 'https://my.trekyoubaby.com/click?pid=4941&offer_id=8322';
-    const LINK_KAZAKHSTAN = 'https://meet.google.com/landing';
+    const LINK_RUSSIA = 'https://track.magicclick.partners/click?o=1060&a=22476&link_id=6560';
+    const LINK_KAZAKHSTAN = 'https://track.magicclick.partners/click?o=1060&a=22476&link_id=6560';
     
     const loadingElement = document.getElementById('loading');
     const errorElement = document.getElementById('error');
