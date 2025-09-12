@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const LINK_RUSSIA = 'https://track.magicclick.partners/click?o=1060&a=22476&link_id=6560';
-    const LINK_KAZAKHSTAN = 'https://track.magicclick.partners/click?o=1060&a=22476&link_id=6560';
+    const LINK_RUSSIA = 'https://dgr.so/feb706a9c';
+    const LINK_KAZAKHSTAN = 'https://dgr.so/feb706a9c';
     
     const loadingElement = document.getElementById('loading');
     const errorElement = document.getElementById('error');
