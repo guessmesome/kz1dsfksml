@@ -1,43 +1,48 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const LINK_RUSSIA = 'https://track.magicclick.partners/click?o=1060&a=22476&link_id=6560';
-    const LINK_KAZAKHSTAN = 'https://track.magicclick.partners/click?o=1060&a=22476&link_id=6560';
+// ===== CONFIGURATION =====
+const SUPABASE_EDGE_URL = 'https://fljznpejgywacrnxlggv.supabase.co/functions/v1/get-redirect-url';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsanpucGVqZ3l3YWNybnhsZ2d2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwODc3ODcsImV4cCI6MjA4MDY2Mzc4N30.oDc46bCj9ZPdUUUvdDTddY5un3A1_lIFUrs_UfFh6N4';
+const LANDING_KEY = 'kzmell';
+// ==========================
+
+async function getOfferUrl() {
+    console.log('Fetching offer URL for key:', LANDING_KEY);
     
-    const loadingElement = document.getElementById('loading');
-    const errorElement = document.getElementById('error');
-    
-    function checkLocationAndRedirect() {
-        window.va?.('track', 'geolocation_check_started');
+    try {
+        const response = await fetch(SUPABASE_EDGE_URL, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({ key: LANDING_KEY })
+        });
+
+        const data = await response.json();
         
-        fetch('https://get.geojs.io/v1/ip/country.json')
-            .then(response => {
-                if (!response.ok) throw new Error('API request failed');
-                return response.json();
-            })
-            .then(data => {
-                const countryCode = data.country;
-                
-                if (countryCode === 'RU') {
-                    window.va?.('track', 'redirect_russia');
-                    window.location.href = LINK_RUSSIA;
-                } else if (countryCode === 'KZ') {
-                    window.va?.('track', 'redirect_kazakhstan');
-                    window.location.href = LINK_KAZAKHSTAN;
-                } else {
-                    window.va?.('track', 'redirect_other_country', { country: countryCode });
-                    window.location.href = LINK_RUSSIA;
-                }
-            })
-            .catch(error => {
-                window.va?.('track', 'geolocation_error_redirect_default', { error: error.message });
-                window.location.href = LINK_RUSSIA;
-            });
+        if (data.success && data.url) {
+            console.log('Offer URL loaded:', data.url);
+            return data.url;
+        } else {
+            console.error('Failed to get offer URL:', data);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error fetching offer URL:', error);
+        return null;
     }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const offerUrl = await getOfferUrl();
     
-    function showError(message) {
-        loadingElement.classList.add('hidden');
-        errorElement.textContent = message;
-        errorElement.classList.remove('hidden');
+    if (offerUrl) {
+        window.location.href = offerUrl;
+    } else {
+        const errorElement = document.getElementById('error');
+        if (errorElement) {
+            errorElement.textContent = 'Connection error. Please try again.';
+            errorElement.classList.remove('hidden');
+        }
     }
-    
-    checkLocationAndRedirect();
 });
