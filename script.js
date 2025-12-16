@@ -4,6 +4,29 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const LANDING_KEY = 'kzmell';
 // ==========================
 
+function getUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+        subid: urlParams.get('subid') || '',
+        clickid: urlParams.get('clickid') || '',
+        subid2: urlParams.get('subid2') || '',
+        p7: urlParams.get('p7') || ''
+    };
+}
+
+function appendParamsToUrl(url) {
+    const params = getUrlParams();
+    const urlObj = new URL(url);
+    
+    Object.entries(params).forEach(([key, value]) => {
+        if (value) {
+            urlObj.searchParams.set(key, value);
+        }
+    });
+    
+    return urlObj.toString();
+}
+
 async function getOfferUrl() {
     console.log('Fetching offer URL for key:', LANDING_KEY);
     
@@ -37,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const offerUrl = await getOfferUrl();
     
     if (offerUrl) {
-        window.location.href = offerUrl;
+        window.location.href = appendParamsToUrl(offerUrl);
     } else {
         const errorElement = document.getElementById('error');
         if (errorElement) {
