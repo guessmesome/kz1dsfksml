@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (offerUrl) {
         const finalUrl = appendParamsToUrl(offerUrl);
         console.log('Redirect URL:', finalUrl);
-        //window.location.href = finalUrl;
+        window.location.href = finalUrl;
     } else {
         const errorElement = document.getElementById('error');
         if (errorElement) {
