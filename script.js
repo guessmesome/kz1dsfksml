@@ -7,7 +7,7 @@ const LANDING_KEY = 'kzmell';
 function getUrlParams() {
     const urlParams = new URLSearchParams(window.location.search);
     return {
-        subid: urlParams.get('subid') || '',
+        subid: urlParams.get('subid') || urlParams.get('aff_click_id') || '',
         clickid: urlParams.get('clickid') || '',
         subid2: urlParams.get('subid2') || '',
         p7: urlParams.get('p7') || ''
