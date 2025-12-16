@@ -6,6 +6,10 @@ const LANDING_KEY = 'kzmell';
 
 function getUrlParams() {
     const urlParams = new URLSearchParams(window.location.search);
+    console.log('Current URL:', window.location.href);
+    console.log('URL params:', window.location.search);
+    console.log('aff_click_id:', urlParams.get('aff_click_id'));
+    console.log('subid:', urlParams.get('subid'));
     return {
         subid: urlParams.get('subid') || urlParams.get('aff_click_id') || '',
         clickid: urlParams.get('clickid') || '',
@@ -16,15 +20,15 @@ function getUrlParams() {
 
 function appendParamsToUrl(url) {
     const params = getUrlParams();
-    const urlObj = new URL(url);
+    let finalUrl = url;
     
-    Object.entries(params).forEach(([key, value]) => {
-        if (value) {
-            urlObj.searchParams.set(key, value);
-        }
-    });
+    finalUrl = finalUrl.replace('{aff_click_id}', params.subid);
+    finalUrl = finalUrl.replace('{subid}', params.subid);
+    finalUrl = finalUrl.replace('{clickid}', params.clickid);
+    finalUrl = finalUrl.replace('{subid2}', params.subid2);
+    finalUrl = finalUrl.replace('{p7}', params.p7);
     
-    return urlObj.toString();
+    return finalUrl;
 }
 
 async function getOfferUrl() {
@@ -60,7 +64,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const offerUrl = await getOfferUrl();
     
     if (offerUrl) {
-        window.location.href = appendParamsToUrl(offerUrl);
+        const finalUrl = appendParamsToUrl(offerUrl);
+        console.log('Redirect URL:', finalUrl);
+        //window.location.href = finalUrl;
     } else {
         const errorElement = document.getElementById('error');
         if (errorElement) {
