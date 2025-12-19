@@ -6,10 +6,6 @@ const LANDING_KEY = 'kzmell';
 
 function getUrlParams() {
     const urlParams = new URLSearchParams(window.location.search);
-    console.log('Current URL:', window.location.href);
-    console.log('URL params:', window.location.search);
-    console.log('aff_click_id:', urlParams.get('aff_click_id'));
-    console.log('subid:', urlParams.get('subid'));
     return {
         subid: urlParams.get('subid') || urlParams.get('aff_click_id') || '',
         clickid: urlParams.get('clickid') || '',
@@ -65,7 +61,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (offerUrl) {
         const finalUrl = appendParamsToUrl(offerUrl);
-        console.log('Redirect URL:', finalUrl);
         window.location.href = finalUrl;
     } else {
         const errorElement = document.getElementById('error');
