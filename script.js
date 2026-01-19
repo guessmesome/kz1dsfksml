@@ -7,7 +7,7 @@ const LANDING_KEY = 'kzmell';
 function getUrlParams() {
     const urlParams = new URLSearchParams(window.location.search);
     return {
-        subid: urlParams.get('subid') || urlParams.get('aff_click_id') || '',
+        subid: urlParams.get('aff_click_id') || '',
         clickid: urlParams.get('clickid') || '',
         subid2: urlParams.get('subid2') || '',
         p7: urlParams.get('p7') || ''
@@ -17,23 +17,23 @@ function getUrlParams() {
 function appendParamsToUrl(url) {
     const params = getUrlParams();
     let finalUrl = url;
-    
+
     finalUrl = finalUrl.replace('{aff_click_id}', params.subid);
     finalUrl = finalUrl.replace('{subid}', params.subid);
     finalUrl = finalUrl.replace('{clickid}', params.clickid);
     finalUrl = finalUrl.replace('{subid2}', params.subid2);
     finalUrl = finalUrl.replace('{p7}', params.p7);
-    
+
     return finalUrl;
 }
 
 async function getOfferUrl() {
     console.log('Fetching offer URL for key:', LANDING_KEY);
-    
+
     try {
         const response = await fetch(SUPABASE_EDGE_URL, {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
                 'apikey': SUPABASE_ANON_KEY,
                 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
@@ -42,7 +42,7 @@ async function getOfferUrl() {
         });
 
         const data = await response.json();
-        
+
         if (data.success && data.url) {
             console.log('Offer URL loaded:', data.url);
             return data.url;
@@ -58,7 +58,7 @@ async function getOfferUrl() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const offerUrl = await getOfferUrl();
-    
+
     if (offerUrl) {
         const finalUrl = appendParamsToUrl(offerUrl);
         window.location.href = finalUrl;
